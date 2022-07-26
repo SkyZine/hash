@@ -1,4 +1,4 @@
-﻿#include<stdio.h>
+#include<stdio.h>
 #include<Windows.h>
 #include<iostream>
 #include <thread>
@@ -209,8 +209,8 @@ void encryptSM4(u32 X[], u32 RK[], u32 Y[]) {
 	reverse(X, Y);
 }
 
-void encryptSM4_many(u32 *X[], u32 *RK[], u32 *Y[]) {
-	
+void encryptSM4_many(u32* X[], u32* RK[], u32* Y[]) {
+
 	iterate32(*X, *RK);
 	reverse(X, Y);
 }
@@ -265,35 +265,13 @@ int main(void) {
 	LARGE_INTEGER Frequency1;
 	QueryPerformanceFrequency(&Frequency1);
 	QueryPerformanceCounter(&BegainTime1);
-	
-	//for (int i = 0; i < 10000; i++)
-	//{
-		encryptSM4(X, RK, Y);
-		decryptSM4(Y, RK, X);
-	//}
-	
-	
+	encryptSM4(X, RK, Y);
+	printf("************** 生成密文 *****************\n");
+	printf("%08x %08x %08x %08x\n", Y[0], Y[1], Y[2], Y[3]);
+	decryptSM4(Y, RK, X);
 	QueryPerformanceCounter(&EndTime1);
 	cout << "运行时间（单位：s）：" << (double)(EndTime1.QuadPart - BegainTime1.QuadPart) / Frequency1.QuadPart << endl;
 
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	temp1[i] = Xmany[i];
-	//}
-
-
-	/*const int threadCount_many = 4;
-	thread** threads1 = new thread * [threadCount_many];
-	for (int i = 0; i < threadCount_many; i++)
-	{
-		threads1[i] = new thread(encryptSM4, &Xmany[i], &RK[i], &Ymany[i]);
-	}
-
-	for (int i = 0; i < threadCount_many; ++i) {
-		threads1[i]->join();
-	}*/
-
-	//printf("%08x %08x %08x %08x\n", Y[0], Y[1], Y[2], Y[3]);
 	printf("************** 生成明文 *****************\n");
 	//decryptSM4(Y, RK, X);
 	printf("%08x %08x %08x %08x\n", X[0], X[1], X[2], X[3]);
