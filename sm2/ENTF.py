@@ -2,11 +2,6 @@ import random
 import math
 
 
-# -------------------------------------------#
-#    Elementary Number Theory Functions     #
-# -------------------------------------------#
-
-########   Greatest Common Divisior      ########
 def gcd(a, b):
     if a == 0:
         return b
@@ -24,10 +19,6 @@ def matmul(m1, m2):
     return mm
 
 
-########   Extend Euclidean Algorithm    ########
-####  Find solutions of ax + by = gcd(a, b)  ####
-####  return x, y, gcd(a, b)                 ####
-#################################################
 def ExEuclid(a, b):
     m = [[1, 0], [0, 1]]
     while a != 0:
@@ -42,7 +33,6 @@ def ExEuclid(a, b):
     return x, y, b
 
 
-########        Modular Inverse          ########
 def modinv(a, p):
     x, y, d = ExEuclid(a, p)
     if x < 0:
@@ -51,7 +41,6 @@ def modinv(a, p):
         return x
 
 
-########        Modular Devision         ########
 def moddiv(x, y, m):
     a = y % m
     b = m
@@ -66,7 +55,6 @@ def moddiv(x, y, m):
     return v % m
 
 
-########    Modular Square Root          ########
 def modsqroot(a, p):
     if (a == 0):
         return 0
@@ -88,7 +76,6 @@ def p8k1(a, p):
             return i
 
 
-########    Fast Modular Exponent        ########
 def FME(a, b, c):
     ans = 1
     base = a
@@ -99,7 +86,6 @@ def FME(a, b, c):
     return ans
 
 
-########    Probability Prime Test1      ########
 def Fermat_test(p, T=50):
     if ((p == 1) or (p == 2) or (p == 3)):
         return 'prime'
@@ -113,7 +99,6 @@ def Fermat_test(p, T=50):
         return 'prime'
 
 
-########    Probability Prime Test2      ########
 def Miller_Labin(p, T=50):
     if (p == 1) or (p == 2) or (p == 3):
         return 'prime'
@@ -145,7 +130,6 @@ def fac2(n):
     return (s, d)
 
 
-########        Prime Generator          ########
 def geneprime(a=1, b=2 ** 256):
     while (1):
         p = random.randint(a, b)
@@ -154,7 +138,6 @@ def geneprime(a=1, b=2 ** 256):
             return p
 
 
-########        Prime Table          	 ########
 def primetable():
     r = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, \
          67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, \
@@ -172,8 +155,6 @@ def primetable():
     return r
 
 
-########     Prime Table Generator       ########
-######   Generate the first nth prime      ######
 def ptn(n):
     if (n <= 168):
         r = primetable()[:n]
@@ -189,7 +170,6 @@ def ptn(n):
     return r
 
 
-######   Generate the primes less than m   ######
 def ptm(m):
     pt = primetable()
     i = 0
@@ -208,7 +188,6 @@ def ptm(m):
     return r
 
 
-########    Chinese Remainder Theory     ########
 def CRT(a, m):
     M = mullist(m)
     Mi = []
@@ -231,7 +210,6 @@ def mullist(r):
     return s
 
 
-######## Initial Prime Divisor Factorize ########
 def factorize(n):
     sq = math.floor(math.sqrt(n))
     ## slow
@@ -244,13 +222,6 @@ def factorize(n):
     return factor
 
 
-########     Prime Divisor Factorize     ########
-####  We use prime table to trial devision,  ####
-####  So it's quite hard to solve number     ####
-####  greater than 2 ** 32                   ####
-####  A more efficient Algorithm is          ####
-####  Pollard-rho Algorithm					 ####
-#################################################
 def p_resolve(n):
     r = n
     factors = []
@@ -278,11 +249,6 @@ def p_resolve(n):
     return unique_factorize
 
 
-########        Pollard-rho             ########
-####  Ultrafast prime factorize Algorithm   ####
-####  Pollard-rho can resolve about 128 bit ####
-####  number in 1 second					####
-################################################
 def pollard_rho(n):
     if Miller_Labin(n, 50) == 'prime':
         return [n]
@@ -410,9 +376,6 @@ def Fermat(n):
     return 2 ** (2 ** n) + 1
 
 
-########     Quadratic Remainder        ########
-########       Legendre Symbol          ########
-########        Jacobi Symbol           ########
 def LJ1(m):
     return 1
 
@@ -467,9 +430,6 @@ def Legendre(x, p):
     return Jacobi(x, p)
 
 
-######## Polynomial Fields Arithmetics  ########
-####  This is only implementation on PF     ####
-####  Faster Algorithms are not found yet   ####
 def GF28_irre():
     return 0b100011011
 
