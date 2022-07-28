@@ -4,18 +4,6 @@ import ENTF as et
 import random
 
 
-#########################################
-####       ECSM Implementations      ####
-#########################################
-
-###############################################################
-####   Affine Coordinate:       y^2 = x^3 + ax + b         ####
-####   Projective Coordinate:   zy^2 = axz^2 + bz^3        ####
-####   Jacobian Coordinate:     y^2 = x^3 +axz^4 + bz^6    ####
-###############################################################
-
-####   Modular Division implemented by Extend Euclidean Algorithm
-####   d = b / a mod p
 def moddiv(a, b, p):
     '''d = b / a mod p'''
     u, v, m, n = a % p, p, b % p, 0
@@ -33,9 +21,6 @@ def moddiv(a, b, p):
     return m
 
 
-###############################################################
-####   Affine Coordinate Elliptic Curve Arithmetic         ####
-###############################################################
 def PA(P1, P2, p):
     (x1, y1) = P1
     (x2, y2) = P2
@@ -79,13 +64,6 @@ def ECSM(P, k, p, a):
     return Q
 
 
-###############################################################
-####                Affine Coordinate End                  ####
-###############################################################
-
-###############################################################
-####                Coordinate Transform                   ####
-###############################################################
 def Affine2Projective(P):
     (x, y) = P
     Q = (x, y, 1)
@@ -112,13 +90,6 @@ def Jacobian2Affine(P, p):
     return (x, y)
 
 
-###############################################################
-####            Coordinate Transform  End                  ####
-###############################################################
-
-###############################################################
-####   Projective Coordinate Elliptic Curve Arithmetic     ####
-###############################################################
 def PA_P(P, Q, p):
     (x1, y1, z1) = P
     (x2, y2, z2) = Q
@@ -180,13 +151,6 @@ def ECSM_P(P, k, p, a):
     return Q
 
 
-###############################################################
-####            Projective Coordinate End                  ####
-###############################################################
-
-###############################################################
-####   Jacobian Coordinate Elliptic Curve Arithmetic       ####
-###############################################################
 def PA_J(P, Q, p):
     (x1, y1, z1) = P
     (x2, y2, z2) = Q
@@ -247,20 +211,6 @@ def ECSM_J(P, k, p, a):
     return Q
 
 
-###############################################################
-####                Jacobian Coordinate End                ####
-###############################################################
-
-
-######################################################
-####                Curve 25519                   ####
-####   Affine Coordinate: y^2 = x^3 + Ax^2 + x    ####
-######################################################
-
-##################################################
-####    ECSM Implementation of Curve25519     ####
-####    and Fp2 Field Operations              ####
-##################################################
 def Curve25519_Param():
     p = 2 ** 255 - 19
     A = 486662
@@ -332,9 +282,6 @@ def Fp2_smul(k, x):
     return e, f
 
 
-###############################################################
-####                Fp2 Curve25519 Arithmetic              ####
-###############################################################
 def Fp2_PA(P, Q):
     p, A = Curve25519_Param()
 
@@ -407,8 +354,6 @@ def Fp2_ECSM(P, k):
     return Q
 
 
-##  X25519 used for Key Sharing
-##  K = X25519(a, X25519(b, 9)) = X25519(b, X25519(a, 9))
 def ECSM_X25519(a, q):
     p, A = Curve25519_Param()
     alpha = q ** 3 + A * q ** 2 + q
@@ -432,16 +377,6 @@ def ECSM_X25519(a, q):
     return P[0][0] % p
 
 
-###############################################################
-####            Fp2 Curve25519 Arithmetic End              ####
-###############################################################
-
-############################################################################
-####    Git from https://github.com/nnathan/eccsnacks.git               ####
-####    Montgomery Powering Ladder Algorithm for X25519                 ####
-####    See Montgomery Powering Ladder in                               ####
-####    https://blog.csdn.net/qq_41763108/article/details/88908818      ####
-############################################################################
 def cswap(swap, x_2, x_3):
     P = 2 ** 255 - 19
     dummy = swap * ((x_2 - x_3) % P)
@@ -452,8 +387,6 @@ def cswap(swap, x_2, x_3):
     return (x_2, x_3)
 
 
-##  X25519 used for Key Sharing
-##  K = X25519(a, X25519(b, 9)) = X25519(b, X25519(a, 9))
 def X25519(k, u):
     P = 2 ** 255 - 19
     A24 = 121665
@@ -515,19 +448,6 @@ def X25519(k, u):
 
     return (x_2 * pow(z_2, P - 2, P)) % P
 
-
-################################################
-
-################################################
-####    Use Montgomery Ladder to do ECSM    ####
-####    in Affine Coornidate y^2=x^3+ax+b   ####
-################################################
-
-####    See Montgomery Powering Ladder in
-####    https://blog.csdn.net/qq_41763108/article/details/88908818
-
-####    Only X-coordinate Montgomery Powering Ladder Algorithm
-####    Finally get X-coordinate of R = [k]P in SM2 Elliptic Curve Arithmetic
 def Montgomery_Ladder(G, k, mode=0):
     p = 0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF
     a = 0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC
@@ -628,26 +548,16 @@ def X25519_new(k, u):
 
 
 def ECSM_isomorphism(G, k, p, a):
-    '''Use isomorphism to calculate ECSM
-        (x, y) --> (x / u^2, y / u^3)
-    '''
-
-    ## Let ap = -1, then we have u^4 = (a / ap) mod p = 3
-    ## So 3 is fourth residue and u can be calculation by
-    ## t = modsqroot(3, p), u = modsqroot(t, p)
+   
     u = 0xfe338811db0f59e0397bd1a8b21969f5278ca4b8da735ac1897ea208e1db2007
-
-    ## Here we change all elements into isomorphism group elements
     ap = -1
     ##    bp = moddiv(u ** 6, b, p)
     pxp = moddiv(u ** 2, px, p)
     pyp = moddiv(u ** 3, py, p)
     PP = (pxp, pyp)
 
-    ## Do ECSM in isomorphism group
     QP = ECSM(PP, k, p, ap)
 
-    ## change isomorphism group elements into original group elements
     qx = QP[0] * u ** 2 % p
     qy = QP[1] * u ** 3 % p
     Q = (qx, qy)
@@ -1116,12 +1026,6 @@ def sm2p_resolve(n):
 
         return w
 
-
-###################################################
-####   Elliptic Curve Parameter Generation     ####
-###################################################
-
-####   Generate Hilbert class group and class polynomials   ####
 def H(D):
     s = math.floor(math.sqrt(D / 3))
 
