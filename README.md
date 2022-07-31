@@ -19,7 +19,13 @@
 完成人：马海林
 
 项目清单：
+完整项目清单在project.pdf中
 已完成项目：
-
+project1、project4、project5、project8、SM4
 未完成项目：
+project2、project3、project6、project7、project9、project10-19
+有问题的项目：
+project9
+问题：对问题证明不太理解，因此证明进展缓慢或者卡住
 
+运行指导：运行C或C++注意包含头文件
